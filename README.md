@@ -13,7 +13,7 @@
 
 | 模块 | 说明 |
 | --- | --- |
-| 📖 学习新词 | 每天 35 个，点击卡片翻释义，支持英语自动发音 |
+| 📖 学习新词 | 每天 0-35 个，点击卡片翻释义，支持英语自动发音 |
 | ✅ 选择测试 | 英 → 中 4 选 1，即时判分并高亮正确答案 |
 | ⌨️ 拼写测试 | 中 → 英 默写，检验是否真的会拼 |
 | 🔥 红名单 | 自动收集错词，一键重刷，可导出 `txt` |
@@ -35,8 +35,5 @@
 
 ### 本地运行
 ```bash
-git clone https://github.com/你的用户名/word-trainer.git
+git clone https://github.com/violetcodt/word-trainer.git
 cd word-trainer
-# 直接双击 index.html，或起一个静态服务：
-python -m http.server 8000
-# 浏览器访问 http://localhost:8000
