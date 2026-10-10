@@ -66,6 +66,10 @@ button.link{border:0;background:none;color:#2563eb;font-size:14px;font-family:in
 .reditem .n{color:#ef4444;font-size:12px;white-space:nowrap;margin-left:8px}
 .big{font-size:26px;font-weight:800;color:#2563eb;text-align:center;margin:8px 0}
 .center{text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chipbtn{border:1.5px solid #e2e8f0;background:#fff;border-radius:99px;padding:8px 15px;
+  font-size:14px;font-family:inherit;color:#334155}
+.chipbtn.on{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:700}
 </style>
 </head>
 <body>
@@ -192,15 +196,19 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random(
 /* ============ 数据 ============ */
 let P=load();
 function load(){try{const o=JSON.parse(localStorage.getItem(KEY));
-  if(o&&o.words){ o.voice=o.voice!==false; return o }}catch(e){}
-  return{created:today(),words:{},voice:true}}
+  if(o&&o.words){
+    o.voice=o.voice!==false;
+    if(o.audioFallback&&!o.ttsMode) o.ttsMode="online";
+    o.ttsMode=o.ttsMode||"auto";
+    return o }}catch(e){}
+  return{created:today(),words:{},voice:true,ttsMode:"auto"}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}}
 function statOf(en){return P.words[en]||(P.words[en]={seen:0,right:0,wrong:0,streak:0,introduced:"",last:""})}
 function isMastered(s){return s.streak>=MASTER_STREAK&&s.wrong<=1}
 function record(en,ok){const s=statOf(en);s.seen++;s.last=today();
   if(ok){s.right++;s.streak++}else{s.wrong++;s.streak=0} save()}
 
-/* ============ 发音（系统语音 + 在线兜底） ============ */
+/* ============ 发音（系统语音 / 在线发音，二选一） ============ */
 function primeTTS(){
   try{ if(typeof speechSynthesis!=="undefined"){
     speechSynthesis.getVoices();
@@ -235,13 +243,20 @@ function speakFallback(t){
     a.play().catch(()=>{}); return true;
   }catch(e){ return false }
 }
+let _lastSpeak=0;
 function speak(t){
   if(!P.voice) return;
+  const now=Date.now();
+  if(now-_lastSpeak<200) return;            /* 防抖：200ms 内只播一次 */
+  _lastSpeak=now;
+  const m=P.ttsMode||"auto";
+  if(m==="online"){ speakFallback(t); return; }
+  if(m==="system"){ speakWeb(t); return; }
   const ok=speakWeb(t);
-  if(!ok||P.audioFallback) speakFallback(t);
+  if(!ok) speakFallback(t);
 }
 primeTTS();
-/* iOS 解锁：第一次触摸时静默播一次，之后程序触发的发音才有效 */
+/* iOS 解锁：第一次触摸静默播一次，之后程序触发的发音才有效 */
 document.addEventListener("touchstart",function once(){
   try{ if(typeof speechSynthesis!=="undefined"){
     const u=new SpeechSynthesisUtterance(" "); u.volume=0; u.lang="en-US"; speechSynthesis.speak(u);
@@ -257,7 +272,7 @@ function header(){
   const learned=Object.keys(P.words).filter(e=>MAP[e]).length;
   const m=Object.entries(P.words).filter(([e,s])=>MAP[e]&&isMastered(s)).length;
   const red=Object.entries(P.words).filter(([e,s])=>MAP[e]&&s.wrong>0&&!isMastered(s)).length;
-  $("#hdr").textContent=`词库 ${WORDS.length} · 已学 ${learned} · 掌握 ${m} · 红名单 ${red}`;
+  $("#hdr").textContent=`v2.1 · 词库 ${WORDS.length} · 已学 ${learned} · 掌握 ${m} · 红名单 ${red}`;
 }
 
 /* ============ 队列（间隔重复） ============ */
@@ -300,10 +315,9 @@ function selectors(){
   </div>`;
 }
 function bindSel(){
-  const g=$("#gsel"),n=$("#nsel"),nn=$("#newNsel");
+  const g=$("#gsel"),n=$("#nsel");
   if(g)g.onchange=()=>sel.group=g.value;
   if(n)n.onchange=()=>sel.n=+n.value;
-  if(nn)nn.onchange=()=>{sel.newN=+nn.value;render()};
 }
 
 /* ============ 各 Tab ============ */
@@ -311,15 +325,15 @@ function vLearn(){
   const p=pool(sel.group);
   const news=p.filter(w=>!P.words[w.en]);
   const todayNew=Object.values(P.words).filter(s=>s.introduced===today()).length;
-  const opts=[[5,"5 个"],[10,"10 个"],[20,"20 个"],[35,"35 个"],[50,"50 个"],[100,"100 个"],[0,"全部（"+news.length+" 个）"]]
-    .map(([v,t])=>`<option value="${v}"${sel.newN===v?" selected":""}>${t}</option>`).join("");
+  const chips=[[5,"5"],[10,"10"],[20,"20"],[35,"35"],[50,"50"],[100,"100"],[0,"全部("+news.length+")"]]
+    .map(([v,t])=>`<button class="chipbtn${sel.newN===v?" on":""}" data-n="${v}">${t}</button>`).join("");
   const cnt = sel.newN===0 ? news.length : Math.min(sel.newN, news.length);
   return `<div class="card">
       <div class="row"><label class="lb">分组</label>
         <select id="gsel">${['<option value="0">全部</option>']
           .concat(GROUPS.map(g=>`<option value="${g}"${sel.group===g?" selected":""}>${GNAME[g]||g}</option>`)).join("")}</select></div>
-      <div class="row"><label class="lb">本次学</label>
-        <select id="newNsel">${opts}</select></div>
+      <div class="muted" style="margin-top:14px">本次学多少个？</div>
+      <div class="chips">${chips}</div>
     </div>
     <div class="card">
       <div class="statline"><span>今日已学新词（日目标 ${DAILY_NEW}）${todayNew>=DAILY_NEW?" ✅":""}</span><b>${todayNew} / ${DAILY_NEW}</b></div>
@@ -381,8 +395,12 @@ function vStats(){
   <div class="card">
     <div class="row"><label class="lb" style="min-width:auto">🔊 自动发音</label>
       <input type="checkbox" id="voice" ${P.voice?"checked":""} style="width:20px;height:20px"></div>
-    <div class="row"><label class="lb" style="min-width:auto">📶 在线发音兜底</label>
-      <input type="checkbox" id="audioFb" ${P.audioFallback?"checked":""} style="width:20px;height:20px"></div>
+    <div class="row"><label class="lb" style="min-width:auto">🔈 发音方式</label>
+      <select id="ttsSel">
+        <option value="auto"${P.ttsMode==="auto"?" selected":""}>自动（系统优先）</option>
+        <option value="system"${P.ttsMode==="system"?" selected":""}>仅系统语音</option>
+        <option value="online"${P.ttsMode==="online"?" selected":""}>仅在线发音</option>
+      </select></div>
     <button class="btn ghost" id="testSpk" style="margin-top:12px">测试发音（读 inflation）</button>
     <div id="spkMsg" class="muted" style="margin-top:8px"></div>
     <button class="btn ghost" id="exp" style="margin-top:14px">导出进度备份</button>
@@ -408,19 +426,22 @@ function bind(){
     const txt=items.map(([e,s])=>`${e}\t${MAP[e].zh}\t错${s.wrong}次`).join("\n")||"（空）";
     download("redlist.txt",txt,"text/plain")});
   on("exp",()=>download("word_progress_"+today()+".json",JSON.stringify(P),"application/json"));
-  on("rst",()=>{if(confirm("确定清空所有进度？不可恢复")){P={created:today(),words:{},voice:P.voice,audioFallback:P.audioFallback};save();render()}});
+  on("rst",()=>{if(confirm("确定清空所有进度？不可恢复")){P={created:today(),words:{},voice:P.voice,ttsMode:P.ttsMode};save();render()}});
   const v=$("#voice"); if(v)v.onchange=()=>{P.voice=v.checked;save()};
-  const af=$("#audioFb"); if(af)af.onchange=()=>{P.audioFallback=af.checked;save()};
+  const ts=$("#ttsSel"); if(ts)ts.onchange=()=>{P.ttsMode=ts.value;save()};
+  document.querySelectorAll(".chipbtn").forEach(b=>b.onclick=()=>{
+    sel.newN=+b.dataset.n; render();
+  });
   on("testSpk",()=>{
-    const m=$("#spkMsg"); m.textContent="正在测试…（请把手机音量调大）";
-    const ok=speakWeb("inflation",(done)=>{ if(done)m.textContent="✅ 系统语音正常"; });
-    if(!ok){ speakFallback("inflation"); m.textContent="⚠️ 浏览器不支持系统语音，已调用在线发音"; }
-    else setTimeout(()=>{ if(m.textContent.indexOf("正在测试")===0)
-      m.textContent="⚠️ 没听到？① 检查静音键 ② 换成浏览器直接打开（别在微信里）③ 勾选「在线发音兜底」"; },1800);
+    const mm=$("#spkMsg"); mm.textContent="正在测试…（请把手机音量调大）";
+    const ok=speakWeb("inflation",(done)=>{ if(done)mm.textContent="✅ 系统语音正常"; });
+    if(!ok){ speakFallback("inflation"); mm.textContent="⚠️ 浏览器不支持系统语音，已调用在线发音"; }
+    else setTimeout(()=>{ if(mm.textContent.indexOf("正在测试")===0)
+      mm.textContent="⚠️ 没听到？① 检查静音键 ② 换成浏览器直接打开（别在微信里）③ 发音方式选「仅在线发音」"; },1800);
   });
   const f=$("#impFile"); if(f)f.onchange=e=>{const file=e.target.files[0];if(!file)return;
     const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);
-      if(o.words){P=o;P.voice=P.voice!==false;save();render();alert("导入成功")}
+      if(o.words){P=o;P.voice=P.voice!==false;P.ttsMode=P.ttsMode||"auto";save();render();alert("导入成功")}
       else alert("文件格式不对")}catch(err){alert("解析失败")}};r.readAsText(file)};
   on("imp",()=>$("#impFile").click());
 }
@@ -433,7 +454,7 @@ function download(name,text,mime){
 /* ============ 开始会话 ============ */
 function startLearn(list){
   if(!list.length) return alert("本组新词已学完，去测试吧！");
-  drill={mode:"learn",words:shuffle(list),i:0,revealed:false,
+  drill={mode:"learn",words:shuffle(list),i:0,revealed:false,spoken:-1,
          right:0,wrong:0,bad:[],questions:[],title:"学习新词"};
   render();
 }
@@ -478,9 +499,10 @@ function drillLearn(){
       <button class="btn ok" data-a="1">记住了</button>
       <button class="btn mid" data-a="2">模糊</button>
       <button class="btn bad" data-a="3">不认识</button></div>`:""}`;
-  speak(w.en);
+  if(drill.spoken!==drill.i){ drill.spoken=drill.i; speak(w.en); }
   $("#quit").onclick=()=>{drill=null;render()};
-  $("#spk").onclick=e=>{e.stopPropagation();const v=P.voice;P.voice=true;speak(w.en);P.voice=v};
+  $("#spk").onclick=e=>{e.stopPropagation();
+    const v=P.voice;P.voice=true;_lastSpeak=0;speak(w.en);P.voice=v;};
   $("#fc").onclick=()=>{if(!drill.revealed){drill.revealed=true;renderDrill()}};
   document.querySelectorAll(".btnrow .btn").forEach(b=>b.onclick=()=>{
     const a=b.dataset.a,s=statOf(w.en);
@@ -503,7 +525,8 @@ function drillChoice(){
      </div>`;
   speak(q.w.en);
   $("#quit").onclick=()=>{drill=null;render()};
-  $("#spk").onclick=e=>{e.stopPropagation();const v=P.voice;P.voice=true;speak(q.w.en);P.voice=v};
+  $("#spk").onclick=e=>{e.stopPropagation();
+    const v=P.voice;P.voice=true;_lastSpeak=0;speak(q.w.en);P.voice=v;};
   let locked=false;
   document.querySelectorAll(".opt").forEach(btn=>btn.onclick=()=>{
     if(locked)return;locked=true;
