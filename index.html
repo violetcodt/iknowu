@@ -191,18 +191,66 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random(
 
 /* ============ 数据 ============ */
 let P=load();
-function load(){try{const o=JSON.parse(localStorage.getItem(KEY));if(o&&o.words)return o}catch(e){}
+function load(){try{const o=JSON.parse(localStorage.getItem(KEY));
+  if(o&&o.words){ o.voice=o.voice!==false; return o }}catch(e){}
   return{created:today(),words:{},voice:true}}
-function save(){localStorage.setItem(KEY,JSON.stringify(P))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}}
 function statOf(en){return P.words[en]||(P.words[en]={seen:0,right:0,wrong:0,streak:0,introduced:"",last:""})}
 function isMastered(s){return s.streak>=MASTER_STREAK&&s.wrong<=1}
 function record(en,ok){const s=statOf(en);s.seen++;s.last=today();
   if(ok){s.right++;s.streak++}else{s.wrong++;s.streak=0} save()}
-function speak(t){if(!P.voice)return;try{const u=new SpeechSynthesisUtterance(t);
-  u.lang="en-US";u.rate=.9;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+
+/* ============ 发音（系统语音 + 在线兜底） ============ */
+function primeTTS(){
+  try{ if(typeof speechSynthesis!=="undefined"){
+    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+  } }catch(e){}
+}
+function pickVoice(){
+  try{
+    const vs=speechSynthesis.getVoices()||[];
+    return vs.find(v=>/^en[-_]US/i.test(v.lang)&&/Google|Samantha|Microsoft|Daniel/i.test(v.name))
+        || vs.find(v=>/^en[-_]US/i.test(v.lang))
+        || vs.find(v=>/^en/i.test(v.lang)) || null;
+  }catch(e){ return null }
+}
+function speakWeb(t,cb){
+  if(typeof speechSynthesis==="undefined"||!window.SpeechSynthesisUtterance) return false;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang="en-US"; u.rate=.9; u.volume=1;
+    const v=pickVoice(); if(v)u.voice=v;
+    u.onend =()=>cb&&cb(true);
+    u.onerror=()=>cb&&cb(false);
+    speechSynthesis.speak(u);
+    setTimeout(()=>{ try{ if(speechSynthesis.paused)speechSynthesis.resume() }catch(e){} },60);
+    return true;
+  }catch(e){ return false }
+}
+function speakFallback(t){
+  try{
+    const a=new Audio("https://dict.youdao.com/dictvoice?type=2&audio="+encodeURIComponent(t));
+    a.play().catch(()=>{}); return true;
+  }catch(e){ return false }
+}
+function speak(t){
+  if(!P.voice) return;
+  const ok=speakWeb(t);
+  if(!ok||P.audioFallback) speakFallback(t);
+}
+primeTTS();
+/* iOS 解锁：第一次触摸时静默播一次，之后程序触发的发音才有效 */
+document.addEventListener("touchstart",function once(){
+  try{ if(typeof speechSynthesis!=="undefined"){
+    const u=new SpeechSynthesisUtterance(" "); u.volume=0; u.lang="en-US"; speechSynthesis.speak(u);
+  } }catch(e){}
+  document.removeEventListener("touchstart",once);
+},{passive:true});
 
 /* ============ 状态 ============ */
-let tab="learn", drill=null, sel={group:"0",n:20};
+let tab="learn", drill=null, sel={group:"0",n:20,newN:35};
 
 /* ============ 顶部摘要 ============ */
 function header(){
@@ -241,7 +289,7 @@ document.getElementById("tabbar").addEventListener("click",e=>{
   tab=b.dataset.tab; drill=null; window.scrollTo(0,0); render();
 });
 
-/* ============ 分组/数量选择器 ============ */
+/* ============ 分组/数量选择器（测试、拼写用） ============ */
 function selectors(){
   return `<div class="card">
     <div class="row"><label class="lb">分组</label>
@@ -252,9 +300,10 @@ function selectors(){
   </div>`;
 }
 function bindSel(){
-  const g=$("#gsel"),n=$("#nsel");
+  const g=$("#gsel"),n=$("#nsel"),nn=$("#newNsel");
   if(g)g.onchange=()=>sel.group=g.value;
   if(n)n.onchange=()=>sel.n=+n.value;
+  if(nn)nn.onchange=()=>{sel.newN=+nn.value;render()};
 }
 
 /* ============ 各 Tab ============ */
@@ -262,12 +311,22 @@ function vLearn(){
   const p=pool(sel.group);
   const news=p.filter(w=>!P.words[w.en]);
   const todayNew=Object.values(P.words).filter(s=>s.introduced===today()).length;
-  return selectors()+`<div class="card">
-    <div class="statline"><span>今日已学新词</span><b>${todayNew} / ${DAILY_NEW}</b></div>
-    <div class="statline"><span>当前分组剩余新词</span><b>${news.length}</b></div>
-    <button class="btn" id="goLearn" style="margin-top:14px">${news.length?"开始学习（最多 "+DAILY_NEW+" 个）":"本组新词已学完 🎉"}</button>
-    <div class="muted" style="margin-top:12px">💡 建议：学完立刻去「测试」做一遍 4 选 1，效果翻倍。</div>
-  </div>`;
+  const opts=[[5,"5 个"],[10,"10 个"],[20,"20 个"],[35,"35 个"],[50,"50 个"],[100,"100 个"],[0,"全部（"+news.length+" 个）"]]
+    .map(([v,t])=>`<option value="${v}"${sel.newN===v?" selected":""}>${t}</option>`).join("");
+  const cnt = sel.newN===0 ? news.length : Math.min(sel.newN, news.length);
+  return `<div class="card">
+      <div class="row"><label class="lb">分组</label>
+        <select id="gsel">${['<option value="0">全部</option>']
+          .concat(GROUPS.map(g=>`<option value="${g}"${sel.group===g?" selected":""}>${GNAME[g]||g}</option>`)).join("")}</select></div>
+      <div class="row"><label class="lb">本次学</label>
+        <select id="newNsel">${opts}</select></div>
+    </div>
+    <div class="card">
+      <div class="statline"><span>今日已学新词（日目标 ${DAILY_NEW}）${todayNew>=DAILY_NEW?" ✅":""}</span><b>${todayNew} / ${DAILY_NEW}</b></div>
+      <div class="statline"><span>当前分组剩余新词</span><b>${news.length}</b></div>
+      <button class="btn" id="goLearn" style="margin-top:14px">${cnt?"开始学习（"+cnt+" 个）":"本组新词已学完 🎉"}</button>
+      <div class="muted" style="margin-top:12px">💡 学完立刻去「测试」做一遍 4 选 1，效果翻倍。</div>
+    </div>`;
 }
 function vTest(){
   const q=buildQueue(sel.n,sel.group,false);
@@ -293,7 +352,6 @@ function vRed(){
   return `<div class="card">
     <div class="statline"><span>红名单词数</span><b>${items.length}</b></div>
     <button class="btn" id="goRed" style="margin-top:14px${items.length?"":";opacity:.5"}" ${items.length?"":"disabled"}>刷红名单（${items.length} 题）</button>
-
     <button class="btn ghost" id="expRed" style="margin-top:10px">导出红名单 txt</button>
   </div>
   <div class="card">${list||'<div class="center muted">太棒了，红名单是空的！</div>'}</div>`;
@@ -323,6 +381,10 @@ function vStats(){
   <div class="card">
     <div class="row"><label class="lb" style="min-width:auto">🔊 自动发音</label>
       <input type="checkbox" id="voice" ${P.voice?"checked":""} style="width:20px;height:20px"></div>
+    <div class="row"><label class="lb" style="min-width:auto">📶 在线发音兜底</label>
+      <input type="checkbox" id="audioFb" ${P.audioFallback?"checked":""} style="width:20px;height:20px"></div>
+    <button class="btn ghost" id="testSpk" style="margin-top:12px">测试发音（读 inflation）</button>
+    <div id="spkMsg" class="muted" style="margin-top:8px"></div>
     <button class="btn ghost" id="exp" style="margin-top:14px">导出进度备份</button>
     <button class="btn ghost" id="imp" style="margin-top:10px">导入进度备份</button>
     <input type="file" id="impFile" accept=".json" hidden>
@@ -334,16 +396,28 @@ function vStats(){
 function bind(){
   bindSel();
   const on=(id,fn)=>{const el=$("#"+id); if(el)el.onclick=fn;};
-  on("goLearn",()=>startLearn(pool(sel.group).filter(w=>!P.words[w.en]).slice(0,DAILY_NEW)));
-  on("goTest",()=>start(("choice"),buildQueue(sel.n,sel.group,false)));
+  on("goLearn",()=>{
+    const all=pool(sel.group).filter(w=>!P.words[w.en]);
+    const n=sel.newN===0?all.length:sel.newN;
+    startLearn(all.slice(0,n));
+  });
+  on("goTest",()=>start("choice",buildQueue(sel.n,sel.group,false)));
   on("goSpell",()=>start("spell",buildQueue(sel.n,sel.group,false)));
   on("goRed",()=>start("choice",buildQueue(999,sel.group,true)));
   on("expRed",()=>{const items=Object.entries(P.words).filter(([e,s])=>MAP[e]&&s.wrong>0&&!isMastered(s));
     const txt=items.map(([e,s])=>`${e}\t${MAP[e].zh}\t错${s.wrong}次`).join("\n")||"（空）";
     download("redlist.txt",txt,"text/plain")});
   on("exp",()=>download("word_progress_"+today()+".json",JSON.stringify(P),"application/json"));
-  on("rst",()=>{if(confirm("确定清空所有进度？不可恢复")){P={created:today(),words:{},voice:P.voice};save();render()}});
+  on("rst",()=>{if(confirm("确定清空所有进度？不可恢复")){P={created:today(),words:{},voice:P.voice,audioFallback:P.audioFallback};save();render()}});
   const v=$("#voice"); if(v)v.onchange=()=>{P.voice=v.checked;save()};
+  const af=$("#audioFb"); if(af)af.onchange=()=>{P.audioFallback=af.checked;save()};
+  on("testSpk",()=>{
+    const m=$("#spkMsg"); m.textContent="正在测试…（请把手机音量调大）";
+    const ok=speakWeb("inflation",(done)=>{ if(done)m.textContent="✅ 系统语音正常"; });
+    if(!ok){ speakFallback("inflation"); m.textContent="⚠️ 浏览器不支持系统语音，已调用在线发音"; }
+    else setTimeout(()=>{ if(m.textContent.indexOf("正在测试")===0)
+      m.textContent="⚠️ 没听到？① 检查静音键 ② 换成浏览器直接打开（别在微信里）③ 勾选「在线发音兜底」"; },1800);
+  });
   const f=$("#impFile"); if(f)f.onchange=e=>{const file=e.target.files[0];if(!file)return;
     const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);
       if(o.words){P=o;P.voice=P.voice!==false;save();render();alert("导入成功")}
@@ -490,7 +564,8 @@ function drillDone(){
 
   $("#again").onclick=()=>{
     if(isLearn){
-      const rest=pool(sel.group).filter(w=>!P.words[w.en]).slice(0,DAILY_NEW);
+      const all=pool(sel.group).filter(w=>!P.words[w.en]);
+      const rest=all.slice(0, sel.newN===0?all.length:sel.newN);
       drill=null;
       if(rest.length) startLearn(rest); else render();
     }else{
