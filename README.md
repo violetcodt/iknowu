@@ -5,7 +5,7 @@
 > 一个为自己学习单词准备的背单词网页应用。
 
 
-🔗 **在线使用**：https://你的用户名.github.io/word-trainer/
+🔗 **在线使用**：https://violetcodt.github.io/word-trainer/
 
 ---
 
