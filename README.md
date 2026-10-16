@@ -1,4 +1,4 @@
-# 自律型英语单词背诵 · Word Trainer
+# 自律型英语单词背诵 · I Know u
 
 [English](README_EN.md) | **简体中文**
 
