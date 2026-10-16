@@ -1,10 +1,10 @@
-# 自律型英语单词背诵 · I Know u
+# 自律型英语单词背诵 · I Know U
 
 [English](README_EN.md) | **简体中文**
 
 > 一个为自己学习单词准备的背单词网页应用。
 
-🔗 **在线使用**：https://violetcodt.github.io/word-trainer/
+🔗 **在线使用**：https://violetcodt.github.io/iknowu/
 
 ---
 
@@ -41,13 +41,13 @@
 
 ### 本地运行
 ```bash
-git clone https://github.com/violetcodt/word-trainer.git
-cd word-trainer
+git clone https://github.com/violetcodt/iknowu.git
+cd iknowu
 # 双击 index.html，或起一个静态服务器：
 python -m http.server 8000
 ```
 
-> 若仓库里的入口文件不叫 `index.html`（例如改名为 `index_v2.html`），访问时需要在地址后面带上文件名：`https://violetcodt.github.io/word-trainer/index_v2.html`。
+> 若仓库里的入口文件不叫 `index.html`（例如改名为 `index_v2.html`），访问时需要在地址后面带上文件名：`https://violetcodt.github.io/iknowu/index_v2.html`。
 
 ## 📥 添加自己的生词
 
