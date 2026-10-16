@@ -10,12 +10,8 @@
 <title>I Know U · 单词背诵</title>
 <meta name="description" content="I Know U 是一个背单词的网页工具：打开即用、无需登录，学习进度只保存在你自己的浏览器里。">
 <meta property="og:title" content="I Know U · 单词背诵">
-<meta property="og:description" content="打开即用的网页版背单词工具，零安装、无需登录、可离线使用。">
+<meta property="og:description" content="打开即用的网页版背单词工具，零安装、无需登录。">
 <meta property="og:type" content="website">
-<link rel="icon" href="./favicon.ico" sizes="any">
-<link rel="icon" href="./icon-192.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<link rel="manifest" href="./manifest.json">
 
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -204,7 +200,7 @@ let WORDS=[], MAP={}, GROUPS=[];
 
 /* ============ 配置 ============ */
 const VERSION="v2.3";
-const DECK="金融经济类";                 /* 当前内置词库名（应用名是 I Know U） */
+const DECK="金融经济类";
 const DAILY_NEW=35, REVIEW_SIZE=30, MASTER_STREAK=3;
 const KEY="iknowu_v1", OLD_KEY="jmj_words_v1";
 
@@ -229,7 +225,7 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random(
 let P=load();
 rebuild();
 function load(){
-  /* 新版 key 读不到时，尝试从旧 key 迁移（保留老用户进度） */
+  /* 新版 key 读不到时，尝试从旧 key 迁移（保留老进度） */
   let raw=null;
   try{
     raw=localStorage.getItem(KEY);
@@ -294,7 +290,7 @@ let _lastSpeak=0;
 function speak(t){
   if(!P.voice) return;
   const now=Date.now();
-  if(now-_lastSpeak<200) return;            /* 防抖：200ms 内只播一次 */
+  if(now-_lastSpeak<200) return;
   _lastSpeak=now;
   const m=P.ttsMode||"auto";
   if(m==="online"){ speakFallback(t); return; }
@@ -303,7 +299,7 @@ function speak(t){
   if(!ok) speakFallback(t);
 }
 primeTTS();
-/* iOS 解锁：第一次触摸静默播一次，之后程序触发的发音才有效 */
+/* iOS 解锁：第一次触摸静默播一次 */
 document.addEventListener("touchstart",function once(){
   try{ if(typeof speechSynthesis!=="undefined"){
     const u=new SpeechSynthesisUtterance(" "); u.volume=0; u.lang="en-US"; speechSynthesis.speak(u);
@@ -351,7 +347,7 @@ document.getElementById("tabbar").addEventListener("click",e=>{
   tab=b.dataset.tab; drill=null; window.scrollTo(0,0); render();
 });
 
-/* ============ 分组/数量选择器（测试、拼写用） ============ */
+/* ============ 分组/数量选择器 ============ */
 function selectors(){
   return `<div class="card">
     <div class="row"><label class="lb">分组</label>
@@ -635,7 +631,7 @@ function bind(){
   const f=$("#impFile"); if(f)f.onchange=e=>{const file=e.target.files[0];if(!file)return;
     const r=new FileReader();r.onload=()=>{try{
       const raw=JSON.parse(r.result);
-      const d=(raw&&raw.data)?raw.data:raw;        /* 兼容旧版备份（直接是 P） */
+      const d=(raw&&raw.data)?raw.data:raw;        /* 兼容旧版备份 */
       if(d&&d.words){
         d.voice=d.voice!==false; d.ttsMode=d.ttsMode||"auto";
         if(!d.created)d.created=today();
@@ -803,13 +799,6 @@ function drillDone(){
 
 /* ============ 启动 ============ */
 render();
-
-/* ============ PWA：注册 Service Worker（离线可用） ============ */
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
-  });
-}
 </script>
 </body>
 </html>
