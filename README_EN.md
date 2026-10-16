@@ -1,4 +1,4 @@
-# Self-Disciplined English Vocabulary · Word Trainer
+# Self-Disciplined English Vocabulary · I Know u 
 
 **English** | [简体中文](README.md)
 
