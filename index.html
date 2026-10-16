@@ -2,16 +2,18 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="I Know U">
 <meta name="theme-color" content="#2563eb">
 <title>I Know U · 单词背诵</title>
-<meta name="description" content="I Know U 是一个背单词的网页工具：打开即用、无需登录、离线可用，学习进度只保存在你自己的浏览器里。">
+<meta name="description" content="I Know U 是一个背单词的网页工具：打开即用、无需登录，学习进度只保存在你自己的浏览器里。">
 <meta property="og:title" content="I Know U · 单词背诵">
-<meta property="og:description" content="打开即用的网页版背单词工具，零安装、无需登录、离线可用。">
+<meta property="og:description" content="打开即用的网页版背单词工具，零安装、无需登录、可离线使用。">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#f5a623">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
 
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -87,7 +89,7 @@ code{background:#f1f5f9;padding:1px 5px;border-radius:5px;font-size:12px}
 <body>
 <div id="app">
   <header>
-    <h1>英语单词金融经济类</h1>
+    <h1>I Know U</h1>
     <div class="sub" id="hdr">加载中…</div>
   </header>
   <main id="view"></main>
@@ -197,7 +199,13 @@ const RAW=[
 const BUILTIN=RAW.map(a=>({en:a[0],zh:a[1],g:a[2],p:a[3]||"",builtin:true}));
 const GNAME={A:"A 宏观经济与金融",B:"B 银行·监管·保险",C:"C 科技与新技术",D:"D 商业与企业",E:"E 逻辑衔接与题干",Z:"Z 我的生词"};
 let WORDS=[], MAP={}, GROUPS=[];
-const DAILY_NEW=35, REVIEW_SIZE=30, MASTER_STREAK=3, KEY="jmj_words_v1";
+
+/* ============ 配置 ============ */
+const VERSION="v2.3";
+const DECK="金融经济类";                 /* 当前内置词库名（应用名是 I Know U） */
+const DAILY_NEW=35, REVIEW_SIZE=30, MASTER_STREAK=3;
+const KEY="iknowu_v1", OLD_KEY="jmj_words_v1";
+
 /* 重建索引：内置词库 + 用户自定义生词 */
 function rebuild(){
   const cust=(P&&P.custom?P.custom:[]).filter(w=>w&&w.en&&w.zh)
@@ -218,15 +226,27 @@ const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random(
 /* ============ 数据 ============ */
 let P=load();
 rebuild();
-function load(){try{const o=JSON.parse(localStorage.getItem(KEY));
-  if(o&&o.words){
-    o.voice=o.voice!==false;
-    if(o.audioFallback&&!o.ttsMode) o.ttsMode="online";
-    o.ttsMode=o.ttsMode||"auto";
-    if(!Array.isArray(o.custom))o.custom=[];
-    o.custom=o.custom.filter(w=>w&&w.en&&w.zh).map(w=>({en:String(w.en).trim(),zh:String(w.zh).trim(),g:w.g||"Z",p:w.p||""}));
-    return o }}catch(e){}
-  return{created:today(),words:{},voice:true,ttsMode:"auto",custom:[]}}
+function load(){
+  /* 新版 key 读不到时，尝试从旧 key 迁移（保留老用户进度） */
+  let raw=null;
+  try{
+    raw=localStorage.getItem(KEY);
+    if(!raw){ raw=localStorage.getItem(OLD_KEY); if(raw) localStorage.setItem(KEY,raw); }
+  }catch(e){}
+  try{
+    const o=JSON.parse(raw);
+    if(o&&o.words){
+      o.voice=o.voice!==false;
+      if(o.audioFallback&&!o.ttsMode) o.ttsMode="online";
+      o.ttsMode=o.ttsMode||"auto";
+      if(!o.created) o.created=today();
+      if(!Array.isArray(o.custom))o.custom=[];
+      o.custom=o.custom.filter(w=>w&&w.en&&w.zh).map(w=>({en:String(w.en).trim(),zh:String(w.zh).trim(),g:w.g||"Z",p:w.p||""}));
+      return o;
+    }
+  }catch(e){}
+  return{created:today(),words:{},voice:true,ttsMode:"auto",custom:[]}
+}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}}
 function statOf(en){return P.words[en]||(P.words[en]={seen:0,right:0,wrong:0,streak:0,introduced:"",last:""})}
 function isMastered(s){return s.streak>=MASTER_STREAK&&s.wrong<=1}
@@ -297,7 +317,7 @@ function header(){
   const learned=Object.keys(P.words).filter(e=>MAP[e]).length;
   const m=Object.entries(P.words).filter(([e,s])=>MAP[e]&&isMastered(s)).length;
   const red=Object.entries(P.words).filter(([e,s])=>MAP[e]&&s.wrong>0&&!isMastered(s)).length;
-  $("#hdr").textContent=`v2.2 · 词库 ${WORDS.length} · 我的生词 ${(P.custom||[]).length} · 已学 ${learned} · 掌握 ${m} · 红名单 ${red}`;
+  $("#hdr").textContent=`${DECK} · 词库 ${WORDS.length} · 我的生词 ${(P.custom||[]).length} · 已学 ${learned} · 掌握 ${m} · 红名单 ${red}`;
 }
 
 /* ============ 队列（间隔重复） ============ */
@@ -334,7 +354,7 @@ function selectors(){
   return `<div class="card">
     <div class="row"><label class="lb">分组</label>
       <select id="gsel">${['<option value="0">全部</option>']
-        .concat(GROUPS.map(g=>`<option value="${g}"${sel.group===g?" selected":""}>${GNAME[g]||g}</option>`)).join("")}</select></div>
+        .concat(GROUPS.map(g=>`<option value="${esc(g)}"${sel.group===g?" selected":""}>${esc(GNAME[g]||g)}</option>`)).join("")}</select></div>
     <div class="row"><label class="lb">数量</label>
       <select id="nsel">${[10,20,30,50,100].map(n=>`<option value="${n}"${sel.n===n?" selected":""}>${n} 题</option>`).join("")}</select></div>
   </div>`;
@@ -356,7 +376,7 @@ function vLearn(){
   return `<div class="card">
       <div class="row"><label class="lb">分组</label>
         <select id="gsel">${['<option value="0">全部</option>']
-          .concat(GROUPS.map(g=>`<option value="${g}"${sel.group===g?" selected":""}>${GNAME[g]||g}</option>`)).join("")}</select></div>
+          .concat(GROUPS.map(g=>`<option value="${esc(g)}"${sel.group===g?" selected":""}>${esc(GNAME[g]||g)}</option>`)).join("")}</select></div>
       <div class="muted" style="margin-top:14px">本次学多少个？</div>
       <div class="chips">${chips}</div>
     </div>
@@ -387,7 +407,7 @@ function vRed(){
     .sort((a,b)=>b[1].wrong-a[1].wrong);
   let list=items.map(([e,s])=>{const w=MAP[e];
     return `<div class="reditem"><span>${esc(e)} <span class="muted">${esc(w.zh)}</span></span>
-      <span class="n">错${s.wrong}次 · ${GNAME[w.g]||w.g}</span></div>`}).join("");
+      <span class="n">错${s.wrong}次 · ${esc(GNAME[w.g]||w.g)}</span></div>`}).join("");
   return `<div class="card">
     <div class="statline"><span>红名单词数</span><b>${items.length}</b></div>
     <button class="btn" id="goRed" style="margin-top:14px${items.length?"":";opacity:.5"}" ${items.length?"":"disabled"}>刷红名单（${items.length} 题）</button>
@@ -405,9 +425,11 @@ function vStats(){
     const gl=gw.filter(w=>P.words[w.en]).length;
     const gm=gw.filter(w=>P.words[w.en]&&isMastered(P.words[w.en])).length;
     const pct=Math.round(gl/gw.length*100);
-    return `<div class="muted">${GNAME[g]||g} <span style="float:right">${gl}/${gw.length} · 掌握${gm}</span></div>
+    return `<div class="muted">${esc(GNAME[g]||g)} <span style="float:right">${gl}/${gw.length} · 掌握${gm}</span></div>
       <div class="bar"><i style="width:${pct}%"></i></div>`}).join("");
   return `<div class="card">
+    <div class="statline"><span>版本</span><b>${VERSION}</b></div>
+    <div class="statline"><span>词库</span><b>${esc(DECK)}</b></div>
     <div class="statline"><span>开始日期</span><b>${P.created}</b></div>
     <div class="statline"><span>今天</span><b>${today()}</b></div>
     <div class="statline"><span>词库总量</span><b>${total}</b></div>
@@ -504,7 +526,7 @@ function vCustom(){
     <div class="row"><label class="lb">英文</label><input type="text" id="cwEn" placeholder="如 liquid assets" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
     <div class="row"><label class="lb">中文</label><input type="text" id="cwZh" placeholder="如 流动资产"></div>
     <div class="row"><label class="lb">例句</label><input type="text" id="cwP" placeholder="选填，如 hold liquid assets"></div>
-    <div class="row"><label class="lb">分组</label><select id="cwG">${[...new Set(GROUPS.concat("Z"))].sort().map(g=>`<option value="${g}"${g==="Z"?" selected":""}>${GNAME[g]||g}</option>`).join("")}</select></div>
+    <div class="row"><label class="lb">分组</label><select id="cwG">${[...new Set(GROUPS.concat("Z"))].sort().map(g=>`<option value="${esc(g)}"${g==="Z"?" selected":""}>${esc(GNAME[g]||g)}</option>`).join("")}</select></div>
     <button class="btn" id="cwAdd" style="margin-top:12px">加入生词本</button>
     <div class="muted" id="cwMsg" style="margin-top:8px">${cwFlash}</div>
   </div>
@@ -592,7 +614,9 @@ function bind(){
   on("expRed",()=>{const items=Object.entries(P.words).filter(([e,s])=>MAP[e]&&s.wrong>0&&!isMastered(s));
     const txt=items.map(([e,s])=>`${e}\t${MAP[e].zh}\t错${s.wrong}次`).join("\n")||"（空）";
     download("redlist.txt",txt,"text/plain")});
-  on("exp",()=>download("word_progress_"+today()+".json",JSON.stringify(P),"application/json"));
+  on("exp",()=>download("iknowu-backup-"+today()+".json",
+    JSON.stringify({app:"iknowu",schema:2,exportedAt:new Date().toISOString(),data:P},null,2),
+    "application/json"));
   on("rst",()=>{if(confirm("确定清空所有进度？不可恢复")){P={created:today(),words:{},voice:P.voice,ttsMode:P.ttsMode,custom:P.custom||[]};save();rebuild();render()}});
   const v=$("#voice"); if(v)v.onchange=()=>{P.voice=v.checked;save()};
   const ts=$("#ttsSel"); if(ts)ts.onchange=()=>{P.ttsMode=ts.value;save()};
@@ -607,9 +631,15 @@ function bind(){
       mm.textContent="⚠️ 没听到？① 检查静音键 ② 换成浏览器直接打开（别在微信里）③ 发音方式选「仅在线发音」"; },1800);
   });
   const f=$("#impFile"); if(f)f.onchange=e=>{const file=e.target.files[0];if(!file)return;
-    const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);
-      if(o.words){P=o;P.voice=P.voice!==false;P.ttsMode=P.ttsMode||"auto";if(!Array.isArray(P.custom))P.custom=[];save();rebuild();render();alert("导入成功")}
-      else alert("文件格式不对")}catch(err){alert("解析失败")}};r.readAsText(file)};
+    const r=new FileReader();r.onload=()=>{try{
+      const raw=JSON.parse(r.result);
+      const d=(raw&&raw.data)?raw.data:raw;        /* 兼容旧版备份（直接是 P） */
+      if(d&&d.words){
+        d.voice=d.voice!==false; d.ttsMode=d.ttsMode||"auto";
+        if(!d.created)d.created=today();
+        if(!Array.isArray(d.custom))d.custom=[];
+        P=d;save();rebuild();render();alert("导入成功")
+      }else alert("文件格式不对")}catch(err){alert("解析失败")}};r.readAsText(file)};
   on("imp",()=>$("#impFile").click());
   bindCustom();
 }
@@ -658,7 +688,7 @@ function drillLearn(){
     <button class="link" id="quit">退出</button></div>
     <div class="progress"><i style="width:${drill.i/drill.words.length*100}%"></i></div>
     <div class="flashcard" id="fc">
-      <div class="chip">${GNAME[w.g]||w.g}</div>
+      <div class="chip">${esc(GNAME[w.g]||w.g)}</div>
       <div class="w">${esc(w.en)} <button class="spk" id="spk">🔊</button></div>
       ${drill.revealed?`<div class="zh">${esc(w.zh)}</div>${w.p?`<div class="ph">${esc(w.p)}</div>`:""}`
         :`<div class="hint">👆 点击卡片显示释义</div>`}
@@ -771,6 +801,13 @@ function drillDone(){
 
 /* ============ 启动 ============ */
 render();
+
+/* ============ PWA：注册 Service Worker（离线可用） ============ */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
