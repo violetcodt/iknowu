@@ -4,7 +4,7 @@
 
 > A vocabulary trainer web app built for my own word learning.
 
-🔗 **Live demo**: https://violetcodt.github.io/word-trainer/
+🔗 **Live demo**: https://violetcodt.github.io/iknowu/
 
 ---
 
@@ -41,13 +41,13 @@ Just open `index.html` in a browser — nothing to install.
 
 ### Run locally
 ```bash
-git clone https://github.com/violetcodt/word-trainer.git
-cd word-trainer
+git clone https://github.com/violetcodt/iknowu.git
+cd iknowu
 # Open index.html directly, or start a static server:
 python -m http.server 8000
 ```
 
-> If the entry file is not named `index.html` (e.g. you renamed it to `index_v2.html`), the URL must include the file name: `https://violetcodt.github.io/word-trainer/index_v2.html`.
+> If the entry file is not named `index.html` (e.g. you renamed it to `index_v2.html`), the URL must include the file name: `https://violetcodt.github.io/iknowu/index_v2.html`.
 
 ## 📥 Add Your Own Words
 
