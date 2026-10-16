@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#2563eb">
+<title>金融经济类单词（阅读复习用）</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+     background:#f4f6fb;color:#1e293b;-webkit-text-size-adjust:100%}
+#app{max-width:640px;margin:0 auto;min-height:100vh}
+header{position:sticky;top:0;z-index:10;background:#2563eb;color:#fff;padding:12px 16px;
+       padding-top:calc(12px + env(safe-area-inset-top))}
+header h1{margin:0;font-size:17px;font-weight:600}
+header .sub{font-size:12px;opacity:.85;margin-top:3px}
+main{padding:14px 14px 96px}
+.tabbar{position:fixed;bottom:0;left:0;right:0;z-index:20;max-width:640px;margin:0 auto;
+        display:flex;background:#fff;border-top:1px solid #e2e8f0;
+        padding-bottom:env(safe-area-inset-bottom)}
+.tabbar button{flex:1;border:0;background:none;padding:8px 0 6px;font-size:11px;color:#94a3b8;font-family:inherit}
+.tabbar button.active{color:#2563eb;font-weight:700}
+.tabbar .ico{display:block;font-size:20px;line-height:1.3}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(30,41,59,.07)}
+.row{display:flex;gap:10px;align-items:center}
+.row+.row{margin-top:10px}
+label.lb{font-size:13px;color:#64748b;min-width:38px}
+select,input[type=text]{flex:1;font-size:15px;padding:10px 12px;border:1px solid #cbd5e1;
+        border-radius:10px;background:#fff;font-family:inherit;color:#1e293b}
+button.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font-size:16px;
+       font-weight:600;font-family:inherit;background:#2563eb;color:#fff}
+button.btn:active{opacity:.85}
+button.btn.ghost{background:#eef2ff;color:#2563eb}
+button.btn.ok{background:#16a34a;color:#fff;flex:1;width:auto}
+button.btn.mid{background:#f59e0b;color:#fff;flex:1;width:auto}
+button.btn.bad{background:#ef4444;color:#fff;flex:1;width:auto}
+button.link{border:0;background:none;color:#2563eb;font-size:14px;font-family:inherit;padding:4px}
+.muted{color:#64748b;font-size:13px;line-height:1.7}
+.chip{display:inline-block;font-size:11px;background:#eef2ff;color:#4f46e5;
+      border-radius:99px;padding:3px 10px;margin-bottom:12px}
+.drill-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#64748b;margin-bottom:8px}
+.progress{height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:16px}
+.progress i{display:block;height:100%;background:#2563eb;transition:width .25s}
+.flashcard{background:#fff;border-radius:18px;padding:30px 20px;text-align:center;
+       box-shadow:0 4px 16px rgba(30,41,59,.08);min-height:210px;
+       display:flex;flex-direction:column;justify-content:center;align-items:center}
+.flashcard .w{font-size:27px;font-weight:700;word-break:break-word;line-height:1.3}
+.flashcard .zh{font-size:21px;color:#2563eb;font-weight:600;margin-top:14px}
+.flashcard .ph{font-size:14px;color:#64748b;margin-top:12px;line-height:1.6}
+.flashcard .hint{font-size:14px;color:#94a3b8;margin-top:16px}
+.spk{border:0;background:#f1f5f9;border-radius:50%;width:34px;height:34px;font-size:16px;margin-left:6px}
+.btnrow{display:flex;gap:8px;margin-top:14px}
+.opt{display:block;width:100%;text-align:left;border:1.5px solid #e2e8f0;background:#fff;
+     border-radius:12px;padding:14px;font-size:16px;font-family:inherit;color:#1e293b;margin-bottom:9px}
+.opt:active{background:#f8fafc}
+.opt.right{border-color:#16a34a;background:#f0fdf4;color:#15803d;font-weight:600}
+.opt.wrong{border-color:#ef4444;background:#fef2f2;color:#b91c1c;font-weight:600}
+.bar{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin:5px 0 12px}
+.bar i{display:block;height:100%;background:#2563eb}
+.statline{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;border-bottom:1px solid #f1f5f9}
+.statline b{font-weight:700}
+.reditem{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f1f5f9;font-size:14px}
+.reditem .n{color:#ef4444;font-size:12px;white-space:nowrap;margin-left:8px}
+.big{font-size:26px;font-weight:800;color:#2563eb;text-align:center;margin:8px 0}
+.center{text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chipbtn{border:1.5px solid #e2e8f0;background:#fff;border-radius:99px;padding:8px 15px;
+  font-size:14px;font-family:inherit;color:#334155}
+.chipbtn.on{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:700}
+textarea{width:100%;min-height:112px;font-size:15px;line-height:1.6;padding:10px 12px;
+  border:1px solid #cbd5e1;border-radius:10px;font-family:inherit;color:#1e293b;resize:vertical}
+code{background:#f1f5f9;padding:1px 5px;border-radius:5px;font-size:12px}
+.duo{display:flex;gap:8px;margin-top:10px}
+.duo .btn{flex:1;width:auto;margin-top:0}
+.del{border:0;background:none;color:#ef4444;font-family:inherit;font-size:13px;padding:0 0 0 6px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>英语单词金融经济类</h1>
+    <div class="sub" id="hdr">加载中…</div>
+  </header>
+  <main id="view"></main>
+  <nav class="tabbar" id="tabbar">
+    <button data-tab="learn"><span class="ico">📖</span>学习</button>
+    <button data-tab="test"><span class="ico">✅</span>测试</button>
+    <button data-tab="spell"><span class="ico">⌨️</span>拼写</button>
+    <button data-tab="red"><span class="ico">🔥</span>红名单</button>
+    <button data-tab="custom"><span class="ico">📥</span>生词本</button>
+    <button data-tab="stats"><span class="ico">📊</span>统计</button>
+  </nav>
+</div>
+
+<script>
+/* ============ 词库 ============ */
+const RAW=[
+["inflation","通货膨胀","A","curb / control inflation 抑制通胀"],
+["deflation","通货紧缩","A",""],["stagflation","滞胀","A",""],
+["monetary policy","货币政策","A","tighten / loosen monetary policy"],
+["fiscal policy","财政政策","A","fiscal stimulus 财政刺激"],
+["interest rate","利率","A","raise / cut interest rates"],
+["benchmark rate","基准利率","A",""],["central bank","中央银行","A",""],
+["liquidity","流动性","A","inject liquidity 注入流动性"],
+["stimulus","刺激（政策）","A",""],["subsidy","补贴","A",""],
+["tariff","关税","A","impose tariffs on… 对…加征关税"],
+["protectionism","保护主义","A",""],["GDP","国内生产总值","A",""],
+["recession","经济衰退","A",""],["downturn","下行 / 低迷","A",""],
+["slowdown","放缓","A",""],["recovery","复苏","A",""],["rebound","反弹","A",""],
+["stagnation","停滞","A",""],["momentum","势头","A","gain momentum 蓄势"],
+["unemployment","失业","A",""],["labor force","劳动力","A",""],
+["consumption","消费","A",""],["investment","投资","A",""],
+["net exports","净出口","A",""],["deficit","赤字","A","trade deficit 贸易逆差"],
+["surplus","盈余 / 顺差","A",""],["leverage","杠杆","A",""],["deleveraging","去杠杆","A",""],
+["sovereign debt","主权债务","A",""],["default","违约","A","default on debt 债务违约"],
+["exchange rate","汇率","A",""],["appreciation","升值","A",""],["depreciation","贬值","A",""],
+["foreign exchange reserves","外汇储备","A",""],["capital flow","资本流动","A",""],
+["capital flight","资本外逃","A",""],["emerging markets","新兴市场","A",""],
+["volatility","波动性","A","market volatility 市场波动"],
+["credit crunch","信贷紧缩","A",""],["bond","债券","A",""],["yield","收益率","A",""],
+["mortgage","抵押贷款","A",""],["bubble","泡沫","A","asset bubble 资产泡沫"],
+["systemic risk","系统性风险","A",""],["contagion","传染（效应）","A",""],
+
+["regulator","监管机构","B",""],["regulation","监管 / 法规","B",""],
+["supervision","监管 / 监督","B",""],["oversight","监督","B",""],
+["prudential regulation","审慎监管","B",""],["macro-prudential","宏观审慎","B",""],
+["capital adequacy","资本充足率","B",""],["reserve requirement","存款准备金（率）","B",""],
+["compliance","合规","B",""],["governance","治理","B","corporate governance 公司治理"],
+["disclosure","信息披露","B",""],["credit risk","信用风险","B",""],
+["market risk","市场风险","B",""],["operational risk","操作风险","B",""],
+["liquidity risk","流动性风险","B",""],["non-performing loan","不良贷款","B",""],
+["provision","拨备 / 准备金","B",""],["deposit","存款","B",""],["loan","贷款","B",""],
+["interest margin","利差","B",""],["premium","保费 / 溢价","B","insurance premium 保费"],
+["claim","理赔 / 索赔","B",""],["underwriting","承保","B",""],["policyholder","投保人","B",""],
+["insurer","保险公司","B",""],["reinsurance","再保险","B",""],["bailout","救助","B",""],
+["recapitalization","资本重组","B",""],["deposit insurance","存款保险","B",""],
+["anti-money laundering","反洗钱","B",""],["financial inclusion","普惠金融","B",""],
+["fintech","金融科技","B",""],["consumer protection","消费者保护","B",""],
+["shadow banking","影子银行","B",""],["off-balance-sheet","表外的","B",""],
+["insolvency","无力偿债 / 破产","B",""],["restructuring","重组","B",""],
+["delinquency","逾期 / 拖欠","B",""],
+
+["artificial intelligence","人工智能","C",""],["machine learning","机器学习","C",""],
+["deep learning","深度学习","C",""],["algorithm","算法","C",""],["big data","大数据","C",""],
+["data mining","数据挖掘","C",""],["analytics","分析（学）","C",""],
+["cloud computing","云计算","C",""],["virtualization","虚拟化","C",""],["server","服务器","C",""],
+["bandwidth","带宽","C",""],["Internet of Things","物联网","C",""],
+["quantum computing","量子计算","C",""],["blockchain","区块链","C",""],
+["distributed ledger","分布式账本","C",""],["consensus","共识（机制）","C",""],
+["cryptocurrency","加密货币","C",""],["smart contract","智能合约","C",""],
+["digital currency","数字货币","C",""],["central bank digital currency","央行数字货币","C",""],
+["encryption","加密","C",""],["cybersecurity","网络安全","C",""],["cyberattack","网络攻击","C",""],
+["vulnerability","漏洞 / 脆弱性","C",""],["data breach","数据泄露","C",""],
+["phishing","网络钓鱼","C",""],["ransomware","勒索软件","C",""],["privacy","隐私","C",""],
+["data protection","数据保护","C",""],["semiconductor","半导体 / 芯片","C",""],
+["supply chain","供应链","C",""],["automation","自动化","C",""],
+["autonomous driving","自动驾驶","C",""],["platform economy","平台经济","C",""],
+["digital transformation","数字化转型","C",""],["innovation","创新","C",""],
+["start-up","初创企业","C",""],["e-commerce","电子商务","C",""],
+
+["revenue","收入","D",""],["profit","利润","D",""],["margin","利润率 / 边际","D","profit margin 利润率"],
+["earnings","收益","D",""],["merger and acquisition","并购","D",""],["monopoly","垄断","D",""],
+["antitrust","反垄断","D",""],["shareholder","股东","D",""],["stakeholder","利益相关方","D",""],
+["board","董事会","D",""],["transparency","透明度","D",""],["market share","市场份额","D",""],
+["efficiency","效率","D",""],["productivity","生产率","D",""],["incentive","激励","D",""],
+["barrier","障碍 / 壁垒","D","barrier to entry 进入壁垒"],["threshold","门槛","D",""],
+["mechanism","机制","D",""],["framework","框架","D",""],["initiative","举措","D",""],
+["legislation","立法","D",""],["curb","遏制","D","curb inflation 抑制通胀"],
+["boost","提振","D","boost demand 提振需求"],["spur","刺激 / 推动","D",""],
+["hamper","阻碍","D",""],["impede","妨碍","D",""],["mitigate","缓解","D",""],
+["alleviate","缓解","D",""],["enhance","提升","D",""],["reinforce","强化","D",""],
+["undermine","削弱","D",""],["tackle","应对","D","tackle risks 应对风险"],
+["allocate","分配","D",""],["foster","促进","D",""],["surge","激增","D",""],
+["plummet","暴跌","D",""],["offset","抵消","D",""],["erode","侵蚀","D",""],
+
+["indicate","表明","E","the passage indicates that…"],["imply","暗示","E",""],
+["infer","推断","E","it can be inferred that 可推断"],["demonstrate","证明 / 展示","E",""],
+["assess","评估","E",""],["however","然而 / 不过","E",""],["nevertheless","尽管如此","E",""],
+["whereas","然而（表对比）","E",""],["in contrast","相反","E",""],["therefore","因此","E",""],
+["consequently","结果 / 因此","E",""],["moreover","此外 / 而且","E",""],
+["furthermore","此外","E",""],["despite","尽管","E",""],["albeit","虽然","E",""],
+["rather than","而不是","E",""],["unless","除非","E",""],["provided that","假如","E",""],
+["given that","考虑到","E",""],["in that","因为","E",""],["optimistic","乐观的","E",""],
+["pessimistic","悲观的","E",""],["objective","客观的","E",""],["neutral","中立的","E",""],
+["critical","批判的","E",""],["skeptical","怀疑的","E",""],["supportive","支持的","E",""],
+["cautious","谨慎的","E",""],["indifferent","漠不关心的","E",""],["ambiguous","含糊的","E",""]
+];
+const BUILTIN=RAW.map(a=>({en:a[0],zh:a[1],g:a[2],p:a[3]||"",builtin:true}));
+const GNAME={A:"A 宏观经济与金融",B:"B 银行·监管·保险",C:"C 科技与新技术",D:"D 商业与企业",E:"E 逻辑衔接与题干",Z:"Z 我的生词"};
+let WORDS=[], MAP={}, GROUPS=[];
+const DAILY_NEW=35, REVIEW_SIZE=30, MASTER_STREAK=3, KEY="jmj_words_v1";
+/* 重建索引：内置词库 + 用户自定义生词 */
+function rebuild(){
+  const cust=(P&&P.custom?P.custom:[]).filter(w=>w&&w.en&&w.zh)
+    .map(w=>({en:String(w.en).trim(),zh:String(w.zh).trim(),g:(w.g||"Z"),
+              p:String(w.p||"").trim(),custom:true}));
+  WORDS=BUILTIN.concat(cust);
+  MAP={}; WORDS.forEach(w=>MAP[w.en]=w);
+  GROUPS=[...new Set(WORDS.map(w=>w.g))].sort();
+  GROUPS.forEach(g=>{ if(!GNAME[g]) GNAME[g]=g });
+}
+
+/* ============ 工具 ============ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ============ 数据 ============ */
+let P=load();
+rebuild();
+function load(){try{const o=JSON.parse(localStorage.getItem(KEY));
+  if(o&&o.words){
+    o.voice=o.voice!==false;
+    if(o.audioFallback&&!o.ttsMode) o.ttsMode="online";
+    o.ttsMode=o.ttsMode||"auto";
+    if(!Array.isArray(o.custom))o.custom=[];
+    o.custom=o.custom.filter(w=>w&&w.en&&w.zh).map(w=>({en:String(w.en).trim(),zh:String(w.zh).trim(),g:w.g||"Z",p:w.p||""}));
+    return o }}catch(e){}
+  return{created:today(),words:{},voice:true,ttsMode:"auto",custom:[]}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(P))}catch(e){}}
+function statOf(en){return P.words[en]||(P.words[en]={seen:0,right:0,wrong:0,streak:0,introduced:"",last:""})}
+function isMastered(s){return s.streak>=MASTER_STREAK&&s.wrong<=1}
+function record(en,ok){const s=statOf(en);s.seen++;s.last=today();
+  if(ok){s.right++;s.streak++}else{s.wrong++;s.streak=0} save()}
+
+/* ============ 发音（系统语音 / 在线发音，二选一） ============ */
+function primeTTS(){
+  try{ if(typeof speechSynthesis!=="undefined"){
+    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+  } }catch(e){}
+}
+function pickVoice(){
+  try{
+    const vs=speechSynthesis.getVoices()||[];
+    return vs.find(v=>/^en[-_]US/i.test(v.lang)&&/Google|Samantha|Microsoft|Daniel/i.test(v.name))
+        || vs.find(v=>/^en[-_]US/i.test(v.lang))
+        || vs.find(v=>/^en/i.test(v.lang)) || null;
+  }catch(e){ return null }
+}
+function speakWeb(t,cb){
+  if(typeof speechSynthesis==="undefined"||!window.SpeechSynthesisUtterance) return false;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(t);
+    u.lang="en-US"; u.rate=.9; u.volume=1;
+    const v=pickVoice(); if(v)u.voice=v;
+    u.onend =()=>cb&&cb(true);
+    u.onerror=()=>cb&&cb(false);
+    speechSynthesis.speak(u);
+    setTimeout(()=>{ try{ if(speechSynthesis.paused)speechSynthesis.resume() }catch(e){} },60);
+    return true;
+  }catch(e){ return false }
+}
+function speakFallback(t){
+  try{
+    const a=new Audio("https://dict.youdao.com/dictvoice?type=2&audio="+encodeURIComponent(t));
+    a.play().catch(()=>{}); return true;
+  }catch(e){ return false }
+}
+let _lastSpeak=0;
+function speak(t){
+  if(!P.voice) return;
+  const now=Date.now();
+  if(now-_lastSpeak<200) return;            /* 防抖：200ms 内只播一次 */
+  _lastSpeak=now;
+  const m=P.ttsMode||"auto";
+  if(m==="online"){ speakFallback(t); return; }
+  if(m==="system"){ speakWeb(t); return; }
+  const ok=speakWeb(t);
+  if(!ok) speakFallback(t);
+}
+primeTTS();
+/* iOS 解锁：第一次触摸静默播一次，之后程序触发的发音才有效 */
+document.addEventListener("touchstart",function once(){
+  try{ if(typeof speechSynthesis!=="undefined"){
+    const u=new SpeechSynthesisUtterance(" "); u.volume=0; u.lang="en-US"; speechSynthesis.speak(u);
+  } }catch(e){}
+  document.removeEventListener("touchstart",once);
+},{passive:true});
+
+/* ============ 状态 ============ */
+let tab="learn", drill=null, sel={group:"0",n:20,newN:35}, cwFlash="", cwBulkFlash="";
+
+/* ============ 顶部摘要 ============ */
+function header(){
+  const learned=Object.keys(P.words).filter(e=>MAP[e]).length;
+  const m=Object.entries(P.words).filter(([e,s])=>MAP[e]&&isMastered(s)).length;
+  const red=Object.entries(P.words).filter(([e,s])=>MAP[e]&&s.wrong>0&&!isMastered(s)).length;
+  $("#hdr").textContent=`v2.2 · 词库 ${WORDS.length} · 我的生词 ${(P.custom||[]).length} · 已学 ${learned} · 掌握 ${m} · 红名单 ${red}`;
+}
+
+/* ============ 队列（间隔重复） ============ */
+function buildQueue(limit,group,onlyWrong){
+  const t=new Date(today()); const out=[];
+  for(const en in P.words){const w=MAP[en];if(!w)continue;
+    if(group&&group!=="0"&&w.g!==group)continue;
+    const s=P.words[en];
+    if(onlyWrong&&!(s.wrong>0&&!isMastered(s)))continue;
+    let sc=s.wrong*3-s.right;
+    if(s.last)sc+=Math.max(0,Math.round((t-new Date(s.last))/864e5));
+    if(!onlyWrong&&isMastered(s))sc-=6;
+    out.push([sc,en]);}
+  out.sort((a,b)=>b[0]-a[0]);
+  return out.slice(0,limit).map(x=>MAP[x[1]]);
+}
+function pool(group){return group&&group!=="0"?WORDS.filter(w=>w.g===group):WORDS.slice()}
+
+/* ============ 路由 ============ */
+function render(){
+  document.querySelectorAll("#tabbar button").forEach(b=>
+    b.classList.toggle("active",!drill&&b.dataset.tab===tab));
+  if(drill)return renderDrill();
+  $("#view").innerHTML=({learn:vLearn,test:vTest,spell:vSpell,red:vRed,custom:vCustom,stats:vStats})[tab]();
+  bind(); header();
+}
+document.getElementById("tabbar").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  tab=b.dataset.tab; drill=null; window.scrollTo(0,0); render();
+});
+
+/* ============ 分组/数量选择器（测试、拼写用） ============ */
+function selectors(){
+  return `<div class="card">
+    <div class="row"><label class="lb">分组</label>
+      <select id="gsel">${['<option value="0">全部</option>']
+        .concat(GROUPS.map(g=>`<option value="${g}"${sel.group===g?" selected":""}>${GNAME[g]||g}</option>`)).join("")}</select></div>
+    <div class="row"><label class="lb">数量</label>
+      <select id="nsel">${[10,20,30,50,100].map(n=>`<option value="${n}"${sel.n===n?" selected":""}>${n} 题</option>`).join("")}</select></div>
+  </div>`;
+}
+function bindSel(){
+  const g=$("#gsel"),n=$("#nsel");
+  if(g)g.onchange=()=>sel.group=g.value;
+  if(n)n.onchange=()=>sel.n=+n.value;
+}
+
+/* ============ 各 Tab ============ */
+function vLearn(){
+  const p=pool(sel.group);
+  const news=p.filter(w=>!P.words[w.en]);
+  const todayNew=Object.values(P.words).filter(s=>s.introduced===today()).length;
+  const chips=[[5,"5"],[10,"10"],[20,"20"],[35,"35"],[50,"50"],[100,"100"],[0,"全部("+news.length+")"]]
+    .map(([v,t])=>`<button class="chipbtn${sel.newN===v?" on":""}" data-n="${v}">${t}</button>`).join("");
+  const cnt = sel.newN===0 ? news.length : Math.min(sel.newN, news.length);
+  return `<div class="card">
+      <div class="row"><label class="lb">分组</label>
+        <select id="gsel">${['<option value="0">全部</option>']
+          .concat(GROUPS.map(g=>`<option value="${g}"${sel.group===g?" selected":""}>${GNAME[g]||g}</option>`)).join("")}</select></div>
+      <div class="muted" style="margin-top:14px">本次学多少个？</div>
+      <div class="chips">${chips}</div>
+    </div>
+    <div class="card">
+      <div class="statline"><span>今日已学新词（日目标 ${DAILY_NEW}）${todayNew>=DAILY_NEW?" ✅":""}</span><b>${todayNew} / ${DAILY_NEW}</b></div>
+      <div class="statline"><span>当前分组剩余新词</span><b>${news.length}</b></div>
+      <button class="btn" id="goLearn" style="margin-top:14px">${cnt?"开始学习（"+cnt+" 个）":"本组新词已学完 🎉"}</button>
+      <div class="muted" style="margin-top:12px">💡 学完立刻去「测试」做一遍 4 选 1，效果翻倍。</div>
+    </div>`;
+}
+function vTest(){
+  const q=buildQueue(sel.n,sel.group,false);
+  return selectors()+`<div class="card">
+    <div class="muted">系统会优先推「错过多次 / 久没复习 / 未掌握」的词。</div>
+    <button class="btn" id="goTest" style="margin-top:14px">开始选择测试（${q.length} 题）</button>
+    <div class="muted" style="margin-top:10px">词库已学 ${Object.keys(P.words).filter(e=>MAP[e]).length} 词</div>
+  </div>`;
+}
+function vSpell(){
+  const q=buildQueue(sel.n,sel.group,false);
+  return selectors()+`<div class="card">
+    <div class="muted">看中文写英文，检验是否真的会拼。</div>
+    <button class="btn" id="goSpell" style="margin-top:14px">开始拼写（${q.length} 题）</button>
+  </div>`;
+}
+function vRed(){
+  const items=Object.entries(P.words).filter(([e,s])=>MAP[e]&&s.wrong>0&&!isMastered(s))
+    .sort((a,b)=>b[1].wrong-a[1].wrong);
+  let list=items.map(([e,s])=>{const w=MAP[e];
+    return `<div class="reditem"><span>${esc(e)} <span class="muted">${esc(w.zh)}</span></span>
+      <span class="n">错${s.wrong}次 · ${GNAME[w.g]||w.g}</span></div>`}).join("");
+  return `<div class="card">
+    <div class="statline"><span>红名单词数</span><b>${items.length}</b></div>
+    <button class="btn" id="goRed" style="margin-top:14px${items.length?"":";opacity:.5"}" ${items.length?"":"disabled"}>刷红名单（${items.length} 题）</button>
+    <button class="btn ghost" id="expRed" style="margin-top:10px">导出红名单 txt</button>
+  </div>
+  <div class="card">${list||'<div class="center muted">太棒了，红名单是空的！</div>'}</div>`;
+}
+function vStats(){
+  const total=WORDS.length;
+  const learned=Object.keys(P.words).filter(e=>MAP[e]).length;
+  const m=Object.entries(P.words).filter(([e,s])=>MAP[e]&&isMastered(s)).length;
+  const red=Object.entries(P.words).filter(([e,s])=>MAP[e]&&s.wrong>0&&!isMastered(s)).length;
+  const tn=Object.values(P.words).filter(s=>s.introduced===today()).length;
+  const bars=GROUPS.map(g=>{const gw=WORDS.filter(w=>w.g===g);
+    const gl=gw.filter(w=>P.words[w.en]).length;
+    const gm=gw.filter(w=>P.words[w.en]&&isMastered(P.words[w.en])).length;
+    const pct=Math.round(gl/gw.length*100);
+    return `<div class="muted">${GNAME[g]||g} <span style="float:right">${gl}/${gw.length} · 掌握${gm}</span></div>
+      <div class="bar"><i style="width:${pct}%"></i></div>`}).join("");
+  return `<div class="card">
+    <div class="statline"><span>开始日期</span><b>${P.created}</b></div>
+    <div class="statline"><span>今天</span><b>${today()}</b></div>
+    <div class="statline"><span>词库总量</span><b>${total}</b></div>
+    <div class="statline"><span>已学</span><b>${learned}（${Math.round(learned/total*100)}%）</b></div>
+    <div class="statline"><span>已掌握</span><b>${m}</b></div>
+    <div class="statline"><span>红名单</span><b>${red}</b></div>
+    <div class="statline"><span>今日新学</span><b>${tn} / ${DAILY_NEW}</b></div>
+    <div class="statline"><span>我的生词（自定义）</span><b>${(P.custom||[]).length}</b></div>
+  </div>
+  <div class="card">${bars}</div>
+  <div class="card">
+    <div class="row"><label class="lb" style="min-width:auto">🔊 自动发音</label>
+      <input type="checkbox" id="voice" ${P.voice?"checked":""} style="width:20px;height:20px"></div>
+    <div class="row"><label class="lb" style="min-width:auto">🔈 发音方式</label>
+      <select id="ttsSel">
+        <option value="auto"${P.ttsMode==="auto"?" selected":""}>自动（系统优先）</option>
+        <option value="system"${P.ttsMode==="system"?" selected":""}>仅系统语音</option>
+        <option value="online"${P.ttsMode==="online"?" selected":""}>仅在线发音</option>
+      </select></div>
+    <button class="btn ghost" id="testSpk" style="margin-top:12px">测试发音（读 inflation）</button>
+    <div id="spkMsg" class="muted" style="margin-top:8px"></div>
+    <button class="btn ghost" id="exp" style="margin-top:14px">导出进度备份</button>
+    <button class="btn ghost" id="imp" style="margin-top:10px">导入进度备份</button>
+    <input type="file" id="impFile" accept=".json" hidden>
+    <button class="btn ghost" id="rst" style="margin-top:10px;color:#ef4444">重置全部进度</button>
+  </div>`;
+}
+
+/* ============ 生词本（自定义词库） ============ */
+function splitLine(line){
+  let parts;
+  if(/[\t|;；]/.test(line)) parts=line.split(/\s*[\t|;；]\s*/);
+  else{ const i=line.search(/[,，、]/); parts = i<0?[line]:[line.slice(0,i), line.slice(i+1)]; }
+  return parts.map(s=>s.trim()).filter(s=>s!=="");
+}
+function mkWord(parts,defG){
+  const en=(parts[0]||"").trim(), zh=(parts[1]||"").trim();
+  let g="",p="";
+  const rest=parts.slice(2).map(s=>String(s).trim()).filter(Boolean);
+  if(rest.length){
+    if(/^[A-Za-z]$/.test(rest[0])){ g=rest[0].toUpperCase(); p=rest.slice(1).join(", ") }
+    else p=rest.join(", ");
+  }
+  return {en:en,zh:zh,g:g||defG||"Z",p:p};
+}
+function addWords(list,defG){
+  P.custom=Array.isArray(P.custom)?P.custom:[];
+  let add=0,upd=0,skip=0;
+  (list||[]).forEach(w=>{
+    const en=w&&w.en?String(w.en).trim():"", zh=w&&w.zh?String(w.zh).trim():"";
+    if(!en||!zh){skip++;return}
+    if(BUILTIN.some(b=>b.en.toLowerCase()===en.toLowerCase())){skip++;return}
+    const ex=P.custom.find(c=>String(c.en).toLowerCase()===en.toLowerCase());
+    if(ex){ ex.en=en; ex.zh=zh; ex.g=w.g||ex.g||"Z"; ex.p=w.p||ex.p||""; upd++ }
+    else{ P.custom.push({en:en,zh:zh,g:w.g||defG||"Z",p:w.p||""}); add++ }
+  });
+  save(); rebuild();
+  return {add:add,upd:upd,skip:skip};
+}
+function handleCustomText(text,defG){
+  text=String(text||"").replace(/^\uFEFF/,"").trim();
+  const list=[];
+  if(text[0]==="["||text[0]==="{"){
+    let arr=null;
+    try{ const o=JSON.parse(text); arr=Array.isArray(o)?o:(Array.isArray(o.words)?o.words:null); }
+    catch(e){ return {add:0,upd:0,skip:0,error:"JSON 解析失败，检查一下括号和引号"} }
+    if(!arr) return {add:0,upd:0,skip:0,error:"JSON 里没找到词条数组"};
+    arr.forEach(it=>{
+      if(Array.isArray(it)) list.push(mkWord(it.map(String),defG));
+      else if(it&&typeof it==="object"&&it.en) list.push(mkWord([it.en,it.zh||it.cn||it.mean||"",it.g||"",it.p||it.example||""],defG));
+    });
+  }else{
+    text.split(/\r?\n/).forEach(line=>{
+      line=line.trim(); if(!line||line[0]==="#")return;
+      list.push(mkWord(splitLine(line),defG));
+    });
+  }
+  return addWords(list,defG);
+}
+function sumMsg(r){
+  if(r.error) return "❌ "+r.error;
+  const p=[];
+  if(r.add)p.push("新增 "+r.add);
+  if(r.upd)p.push("更新 "+r.upd);
+  if(r.skip)p.push("跳过 "+r.skip+"（重复或信息不全）");
+  return p.length? ("✅ "+p.join(" · ")) : "⚠️ 没识别到有效词条，检查每行是否为「英文, 中文」";
+}
+function vCustom(){
+  const list=P.custom||[];
+  const rows=list.map((w,i)=>`<div class="reditem"><span>${esc(w.en)} <span class="muted">${esc(w.zh)}</span></span>
+    <span class="n">${esc(w.g||"Z")} · <button class="del" data-i="${i}">删除</button></span></div>`).join("");
+  return `<div class="card">
+    <div class="chip">① 手动添加一个生词</div>
+    <div class="row"><label class="lb">英文</label><input type="text" id="cwEn" placeholder="如 liquid assets" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+    <div class="row"><label class="lb">中文</label><input type="text" id="cwZh" placeholder="如 流动资产"></div>
+    <div class="row"><label class="lb">例句</label><input type="text" id="cwP" placeholder="选填，如 hold liquid assets"></div>
+    <div class="row"><label class="lb">分组</label><select id="cwG">${[...new Set(GROUPS.concat("Z"))].sort().map(g=>`<option value="${g}"${g==="Z"?" selected":""}>${GNAME[g]||g}</option>`).join("")}</select></div>
+    <button class="btn" id="cwAdd" style="margin-top:12px">加入生词本</button>
+    <div class="muted" id="cwMsg" style="margin-top:8px">${cwFlash}</div>
+  </div>
+  <div class="card">
+    <div class="chip">② 批量粘贴 / 上传文件</div>
+    <div class="muted">每行一个词，用 <code>逗号</code>、<code>竖线</code> 或 <code>Tab</code> 分隔：<br>
+      <code>英文, 中文, 分组(选填), 例句(选填)</code></div>
+    <textarea id="cwBulk" placeholder="liquid assets, 流动资产&#10;write-off | 核销 | D&#10;haircut, 折扣, A, debt haircut 债务减记" style="margin-top:8px"></textarea>
+    <div class="duo">
+      <button class="btn ghost" id="cwImpTxt">导入上面的内容</button>
+      <button class="btn ghost" id="cwFile">上传文件</button>
+    </div>
+    <input type="file" id="cwFileInput" accept=".txt,.csv,.json,.md" hidden>
+    <div class="muted" id="cwBulkMsg" style="margin-top:8px">${cwBulkFlash}</div>
+    <div class="muted" style="margin-top:8px">支持 .txt/.csv/.json（UTF-8 编码）；导出备份里也包含生词本。</div>
+  </div>
+  <div class="card">
+    <div class="statline"><span>生词本词数</span><b>${list.length}</b></div>
+    <button class="btn" id="cwGo" style="margin-top:12px${list.length?"":";opacity:.5"}" ${list.length?"":"disabled"}>去学习我的生词（${list.length} 个）</button>
+    <div class="duo">
+      <button class="btn ghost" id="cwExp">导出 txt</button>
+      <button class="btn ghost" id="cwClr" style="color:#ef4444">清空生词本</button>
+    </div>
+  </div>
+  <div class="card">${rows||'<div class="center muted">生词本还是空的，用上面两种方式加词吧 👆</div>'}</div>`;
+}
+function bindCustom(){
+  const on=(id,fn)=>{const el=$("#"+id); if(el)el.onclick=fn;};
+  on("cwAdd",()=>{
+    const en=($("#cwEn").value||"").trim(), zh=($("#cwZh").value||"").trim();
+    if(!en||!zh){ cwFlash='<span style="color:#ef4444">英文和中文都要填哦</span>'; render(); return }
+    const r=addWords([{en:en,zh:zh,g:$("#cwG").value,p:($("#cwP").value||"").trim()}],"Z");
+    cwFlash = r.add? '<span style="color:#16a34a">✅ 已加入生词本，去「学习」就能学到它</span>'
+            : (r.upd? '<span style="color:#16a34a">♻️ 该词已更新释义</span>'
+                    : '<span style="color:#f59e0b">⚠️ 这个词已在词库中，已跳过</span>');
+    cwBulkFlash=""; render();
+  });
+  on("cwImpTxt",()=>{
+    const t=($("#cwBulk").value||"").trim();
+    if(!t){ cwBulkFlash="先粘贴一些内容吧"; cwFlash=""; render(); return }
+    cwBulkFlash=sumMsg(handleCustomText(t,"Z")); cwFlash=""; render();
+  });
+  on("cwFile",()=>$("#cwFileInput").click());
+  const fi=$("#cwFileInput");
+  if(fi)fi.onchange=e=>{
+    const f=e.target.files[0]; if(!f)return;
+    const fr=new FileReader();
+    fr.onload=()=>{ cwBulkFlash="「"+f.name+"」：" +sumMsg(handleCustomText(String(fr.result),"Z")); cwFlash=""; render(); };
+    fr.onerror=()=>{ cwBulkFlash="❌ 文件读取失败"; render() };
+    fr.readAsText(f);
+  };
+  document.querySelectorAll(".del").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i, w=(P.custom||[])[i]; if(!w)return;
+    if(!confirm("从生词本删除「"+w.en+"」？"))return;
+    P.custom.splice(i,1); delete P.words[w.en]; save(); rebuild(); render();
+  });
+  on("cwGo",()=>{
+    sel.group=(P.custom||[]).some(w=>(w.g||"Z")==="Z")?"Z":"0";
+    tab="learn"; drill=null; window.scrollTo(0,0); render();
+  });
+  on("cwExp",()=>{
+    const txt=(P.custom||[]).map(w=>[w.en,w.zh,w.g||"Z",w.p||""].join("\t")).join("\n")||"（空）";
+    download("my_words_"+today()+".txt",txt,"text/plain");
+  });
+  on("cwClr",()=>{
+    if(!(P.custom||[]).length)return;
+    if(!confirm("清空生词本？这些词将不再出现在学习与测试中（内置词库不受影响）"))return;
+    (P.custom||[]).forEach(w=>{ delete P.words[w.en] });
+    P.custom=[]; save(); rebuild(); render();
+  });
+}
+
+/* ============ 绑定事件 ============ */
+function bind(){
+  bindSel();
+  const on=(id,fn)=>{const el=$("#"+id); if(el)el.onclick=fn;};
+  on("goLearn",()=>{
+    const all=pool(sel.group).filter(w=>!P.words[w.en]);
+    const n=sel.newN===0?all.length:sel.newN;
+    startLearn(all.slice(0,n));
+  });
+  on("goTest",()=>start("choice",buildQueue(sel.n,sel.group,false)));
+  on("goSpell",()=>start("spell",buildQueue(sel.n,sel.group,false)));
+  on("goRed",()=>start("choice",buildQueue(999,sel.group,true)));
+  on("expRed",()=>{const items=Object.entries(P.words).filter(([e,s])=>MAP[e]&&s.wrong>0&&!isMastered(s));
+    const txt=items.map(([e,s])=>`${e}\t${MAP[e].zh}\t错${s.wrong}次`).join("\n")||"（空）";
+    download("redlist.txt",txt,"text/plain")});
+  on("exp",()=>download("word_progress_"+today()+".json",JSON.stringify(P),"application/json"));
+  on("rst",()=>{if(confirm("确定清空所有进度？不可恢复")){P={created:today(),words:{},voice:P.voice,ttsMode:P.ttsMode,custom:P.custom||[]};save();rebuild();render()}});
+  const v=$("#voice"); if(v)v.onchange=()=>{P.voice=v.checked;save()};
+  const ts=$("#ttsSel"); if(ts)ts.onchange=()=>{P.ttsMode=ts.value;save()};
+  document.querySelectorAll(".chipbtn").forEach(b=>b.onclick=()=>{
+    sel.newN=+b.dataset.n; render();
+  });
+  on("testSpk",()=>{
+    const mm=$("#spkMsg"); mm.textContent="正在测试…（请把手机音量调大）";
+    const ok=speakWeb("inflation",(done)=>{ if(done)mm.textContent="✅ 系统语音正常"; });
+    if(!ok){ speakFallback("inflation"); mm.textContent="⚠️ 浏览器不支持系统语音，已调用在线发音"; }
+    else setTimeout(()=>{ if(mm.textContent.indexOf("正在测试")===0)
+      mm.textContent="⚠️ 没听到？① 检查静音键 ② 换成浏览器直接打开（别在微信里）③ 发音方式选「仅在线发音」"; },1800);
+  });
+  const f=$("#impFile"); if(f)f.onchange=e=>{const file=e.target.files[0];if(!file)return;
+    const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);
+      if(o.words){P=o;P.voice=P.voice!==false;P.ttsMode=P.ttsMode||"auto";if(!Array.isArray(P.custom))P.custom=[];save();rebuild();render();alert("导入成功")}
+      else alert("文件格式不对")}catch(err){alert("解析失败")}};r.readAsText(file)};
+  on("imp",()=>$("#impFile").click());
+  bindCustom();
+}
+function download(name,text,mime){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([text],{type:mime+";charset=utf-8"}));
+  a.download=name;a.click();URL.revokeObjectURL(a.href);
+}
+
+/* ============ 开始会话 ============ */
+function startLearn(list){
+  if(!list.length) return alert("本组新词已学完，去测试吧！");
+  drill={mode:"learn",words:shuffle(list),i:0,revealed:false,spoken:-1,
+         right:0,wrong:0,bad:[],questions:[],title:"学习新词"};
+  render();
+}
+
+function start(mode,list){
+  if(!list.length)return alert("暂无可测的词，先去学几个新词吧");
+  const qs=list.map(w=>{
+    if(mode==="spell")return{w};
+    const others=shuffle(WORDS.filter(x=>x.zh!==w.zh)).slice(0,3);
+    const options=shuffle([w,...others]);
+    return{w,options,correct:options.indexOf(w)};
+  });
+  drill={mode,questions:qs,i:0,right:0,wrong:0,bad:[],
+    title:mode==="spell"?"拼写测试":"选择测试"};
+  render();
+}
+
+/* ============ 会话渲染 ============ */
+function renderDrill(){
+  if(drill.mode==="learn") return drillLearn();
+  if(drill.i>=drill.questions.length) return drillDone();
+  if(drill.mode==="spell") return drillSpell();
+  return drillChoice();
+}
+
+function drillTop(){return `<div class="drill-top"><span>${drill.title} ${drill.i+1}/${drill.questions.length}</span>
+  <button class="link" id="quit">退出</button></div>
+  <div class="progress"><i style="width:${drill.i/drill.questions.length*100}%"></i></div>`}
+
+function drillLearn(){
+  const w=drill.words[drill.i];
+  $("#view").innerHTML=`<div class="drill-top"><span>学习新词 ${drill.i+1}/${drill.words.length}</span>
+    <button class="link" id="quit">退出</button></div>
+    <div class="progress"><i style="width:${drill.i/drill.words.length*100}%"></i></div>
+    <div class="flashcard" id="fc">
+      <div class="chip">${GNAME[w.g]||w.g}</div>
+      <div class="w">${esc(w.en)} <button class="spk" id="spk">🔊</button></div>
+      ${drill.revealed?`<div class="zh">${esc(w.zh)}</div>${w.p?`<div class="ph">${esc(w.p)}</div>`:""}`
+        :`<div class="hint">👆 点击卡片显示释义</div>`}
+    </div>
+    ${drill.revealed?`<div class="btnrow">
+      <button class="btn ok" data-a="1">记住了</button>
+      <button class="btn mid" data-a="2">模糊</button>
+      <button class="btn bad" data-a="3">不认识</button></div>`:""}`;
+  if(drill.spoken!==drill.i){ drill.spoken=drill.i; speak(w.en); }
+  $("#quit").onclick=()=>{drill=null;render()};
+  $("#spk").onclick=e=>{e.stopPropagation();
+    const v=P.voice;P.voice=true;_lastSpeak=0;speak(w.en);P.voice=v;};
+  $("#fc").onclick=()=>{if(!drill.revealed){drill.revealed=true;renderDrill()}};
+  document.querySelectorAll(".btnrow .btn").forEach(b=>b.onclick=()=>{
+    const a=b.dataset.a,s=statOf(w.en);
+    s.seen++;s.introduced=today();s.last=today();
+    if(a==="1"){s.right++;s.streak++}else if(a==="3"){s.wrong++;s.streak=0}
+    save();drill.i++;drill.revealed=false;
+    if(drill.i>=drill.words.length){drill.mode="done";drillDone()}
+    else renderDrill();
+  });
+}
+
+function drillChoice(){
+  const q=drill.questions[drill.i];
+  $("#view").innerHTML=drillTop()+
+    `<div class="flashcard" style="min-height:auto;padding:22px 16px">
+       <div class="w">${esc(q.w.en)} <button class="spk" id="spk">🔊</button></div>
+     </div>
+     <div style="margin-top:14px">
+     ${q.options.map((o,i)=>`<button class="opt" data-i="${i}">${"ABCD"[i]}. ${esc(o.zh)}</button>`).join("")}
+     </div>`;
+  speak(q.w.en);
+  $("#quit").onclick=()=>{drill=null;render()};
+  $("#spk").onclick=e=>{e.stopPropagation();
+    const v=P.voice;P.voice=true;_lastSpeak=0;speak(q.w.en);P.voice=v;};
+  let locked=false;
+  document.querySelectorAll(".opt").forEach(btn=>btn.onclick=()=>{
+    if(locked)return;locked=true;
+    const i=+btn.dataset.i, ok=(i===q.correct);
+    document.querySelectorAll(".opt")[q.correct].classList.add("right");
+    if(!ok)btn.classList.add("wrong");
+    record(q.w.en,ok);
+    if(ok)drill.right++;else{drill.wrong++;drill.bad.push(q.w)}
+    setTimeout(()=>{drill.i++;renderDrill()},ok?420:900);
+  });
+}
+
+function drillSpell(){
+  const q=drill.questions[drill.i];
+  $("#view").innerHTML=drillTop()+
+    `<div class="flashcard" style="min-height:auto;padding:24px 16px">
+       <div class="zh" style="margin:0">${esc(q.w.zh)}</div>
+       ${q.w.p?`<div class="ph">${esc(q.w.p)}</div>`:""}
+     </div>
+     <div class="row" style="margin-top:14px">
+       <input type="text" id="ans" placeholder="输入英文后回车" autocomplete="off"
+              autocapitalize="off" autocorrect="off" spellcheck="false">
+     </div>
+     <button class="btn" id="sub" style="margin-top:10px">提交</button>
+     <div id="fb" class="center" style="margin-top:12px;font-size:15px"></div>`;
+  const inp=$("#ans");inp.focus();
+  $("#quit").onclick=()=>{drill=null;render()};
+  const submit=()=>{
+    const a=inp.value.trim().toLowerCase();
+    if(!a)return;
+    const ok=(a===q.w.en.toLowerCase());
+    record(q.w.en,ok);
+    if(ok)drill.right++;else{drill.wrong++;drill.bad.push(q.w)}
+    $("#fb").innerHTML=ok?`<span style="color:#16a34a">✅ 正确</span>`
+      :`<span style="color:#ef4444">❌ 正确答案：${esc(q.w.en)}</span>`;
+    inp.disabled=true;$("#sub").disabled=true;
+    setTimeout(()=>{drill.i++;renderDrill()},ok?420:1100);
+  };
+  $("#sub").onclick=submit;
+  inp.onkeydown=e=>{if(e.key==="Enter")submit()};
+}
+
+function drillDone(){
+  const n=drill.right+drill.wrong;
+  const isLearn=drill.title==="学习新词";
+  const pct=n?Math.round(drill.right/n*100):0;
+  const bad=(drill.bad||[]).map(w=>
+    `<div class="reditem"><span>${esc(w.en)} <span class="muted">${esc(w.zh)}</span></span></div>`
+  ).join("");
+  $("#view").innerHTML=`<div class="card center">
+    <div class="muted">${isLearn?"本轮学习完成":"本轮完成"}</div>
+    <div class="big">${isLearn?drill.words.length+" 个新词":drill.right+" / "+n}</div>
+    ${isLearn?"":`<div class="muted">正确率 ${pct}%</div>`}
+    <button class="btn" id="again" style="margin-top:16px">再来一轮</button>
+    <button class="btn ghost" id="back" style="margin-top:10px">返回</button>
+  </div>
+  ${bad?`<div class="card"><div class="muted" style="margin-bottom:6px">本轮错题（已进红名单）</div>${bad}</div>`:""}`;
+
+  $("#again").onclick=()=>{
+    if(isLearn){
+      const all=pool(sel.group).filter(w=>!P.words[w.en]);
+      const rest=all.slice(0, sel.newN===0?all.length:sel.newN);
+      drill=null;
+      if(rest.length) startLearn(rest); else render();
+    }else{
+      const m=drill.title==="拼写测试"?"spell":"choice";
+      const list=buildQueue(sel.n,sel.group,false);
+      drill=null;
+      if(list.length) start(m,list); else render();
+    }
+  };
+  $("#back").onclick=()=>{drill=null;render()};
+}
+
+/* ============ 启动 ============ */
+render();
+</script>
+</body>
+</html>
